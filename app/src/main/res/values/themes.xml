@@ -1,0 +1,19 @@
+<resources>
+    <!-- Base application theme. -->
+        <style name="AppTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
+            <item name="android:colorPrimary">@color/colorPrimary</item>
+            <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+            <item name="android:colorAccent">@color/colorAccent</item>
+            <item name="android:navigationBarColor">?android:colorPrimary</item>
+        </style>
+
+    <style name="NoDividerListView" parent="android:Widget.ListView">
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+    <style name="NoLineEditText" parent="android:Widget.EditText">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+</resources>

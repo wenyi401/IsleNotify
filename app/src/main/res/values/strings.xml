@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IsleNotify</string>
+    <string name="xposed_activated">"Xposed: Activated"</string>
+    <string name="xposed_unactivated">"Xposed: Unactivated"</string>
+    <string name="xp_effec">hyper strong toast notify</string>
+    <string name="xposed_error_tip">Module is not activated or Xsp is not supported\n</string>
+    <string name="app_explain">Welcome to use this module!\nAuthor: 文艺 / art\ngithub: wenyi401\nRole with hyper Smart Tips to Access Xiaomi Notice</string>
+    <string name="app_default">default</string>
+    <string name="app_modify">modify</string>
+    <string name="app_dialog_tip">setting</string>
+    <string name="app_time_short_str">short time:</string>
+    <string name="app_time_long_str">long time:</string>
+    <string name="app_shield_str">Block the app\'s notifications</string>
+    <string name="app_info_intercept_str">Custom shield to block \nps: Use | As a dividing line, match the opening content</string>
+    <string name="app_save">save</string>
+    <string name="app_save_tip">save success</string>
+    <string name="app_restart">restart systemUi</string>
+    <string name="app_hide_icon">hide icon</string>
+    <string name="app_about">about</string>
+    <string name="qq_key">hello</string>
+    <string name="app_config">config</string>
+    <string name="app_config_import">import</string>
+    <string name="app_config_export">export</string>
+    <string name="app_remove_tip">Are you sure you want to delete this list of data?</string>
+    <string name="app_remove">remove</string>
+    <string name="app_user">user</string>
+    <string name="app_system">system</string>
+</resources>

@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'androidx.top.hyperos.dynamic.notify'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "androidx.top.hyperos.dynamic.notify"
+        minSdk 33
+        targetSdk 34
+        versionCode 1
+        versionName "24.01.26"
+        multiDexEnabled false
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            multiDexEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+        prefab true
+        compose true
+    }
+
+    packagingOptions {
+        exclude 'META-INF/**'
+        exclude '**.bin'
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly fileTree(dir: 'libs/compile_only', include: ['*.jar'])
+}

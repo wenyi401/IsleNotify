@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IsleNotify</string>
+    <string name="xposed_activated">"Xposed: 已激活"</string>
+    <string name="xposed_unactivated">"Xposed: 未激活"</string>
+    <string name="xp_effec">hyper 灵动额头接入通知</string>
+    <string name="app_explain">欢迎使用本模块! \n作者：文艺 \ngithub：wenyi401 \n作用与 hyper 灵动提示接入小米通知\nQQ交流：644865940</string>
+    <string name="app_default">默认</string>
+    <string name="app_modify">自定义</string>
+    <string name="app_dialog_tip">设置</string>
+    <string name="app_time_short_str">短文本时长:</string>
+    <string name="app_time_long_str">长文本时长:</string>
+    <string name="app_shield_str">屏蔽该应用通知</string>
+    <string name="app_info_intercept_str">自定义屏蔽拦截 \nps:用 | 作为分割线，匹配开头内容</string>
+    <string name="app_save">保存</string>
+    <string name="app_save_tip">保存成功</string>
+    <string name="app_restart">重启系统界面</string>
+    <string name="app_hide_icon">隐藏桌面图标</string>
+    <string name="app_about">关于</string>
+    <string name="qq_key">aIdsv--Qh-o4PkUMu0R__9UMQdh9-ehl</string>
+    <string name="xposed_error_tip">模块未激活或者不支持Xsp\n</string>
+    <string name="app_config">配置</string>
+    <string name="app_config_import">导入配置</string>
+    <string name="app_config_export">导出配置</string>
+    <string name="app_remove_tip">确定删除本列表数据？</string>
+    <string name="app_remove">清除</string>
+    <string name="app_user">用户应用</string>
+    <string name="app_system">系统应用</string>
+</resources>
