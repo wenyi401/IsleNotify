@@ -21,7 +21,7 @@ public class StrongToastInfo {
     public StrongToastInfo(Context context, StatusBarGuideModel statusBarGuideModel, long duration) {
         toast(context, statusBarGuideModel, duration);
     }
-
+    
     public static class status {
         public static String SHOW_CUSTOM = "show_custom_strong_toast";
         public static String HIDE = "hide_strong_toast";
@@ -46,7 +46,7 @@ public class StrongToastInfo {
     private void toast(Context context, StatusBarGuideModel statusBarGuideModel, long duration) {
         String param = Tools.toJson(statusBarGuideModel);
         Bundle data = new Bundle();
-        data.putString("package_name", Config.AppPackage);
+        data.putString("package_name", context.getPackageName());
         data.putString("status_bar_strong_toast", status.SHOW_CUSTOM);
         data.putString("strong_toast_category", model.TEXT_BITMAP);
         data.putLong("duration", duration);

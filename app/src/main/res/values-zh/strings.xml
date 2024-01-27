@@ -17,7 +17,7 @@
     <string name="app_restart">重启系统界面</string>
     <string name="app_hide_icon">隐藏桌面图标</string>
     <string name="app_about">关于</string>
-    <string name="qq_key">aIdsv--Qh-o4PkUMu0R__9UMQdh9-ehl</string>
+    <string name="qq_key">-24Ii6celd4fJeeqX5u-hZAGC7MqVq-w</string>
     <string name="xposed_error_tip">模块未激活或者不支持Xsp\n</string>
     <string name="app_config">配置</string>
     <string name="app_config_import">导入配置</string>
@@ -26,4 +26,6 @@
     <string name="app_remove">清除</string>
     <string name="app_user">用户应用</string>
     <string name="app_system">系统应用</string>
+    <string name="app_modify_tickertext">tickertext 模式</string>
+    <string name="app_log">日志</string>
 </resources>

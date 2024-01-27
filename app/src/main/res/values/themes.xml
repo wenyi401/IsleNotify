@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
         <style name="AppTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
             <item name="android:colorPrimary">@color/colorPrimary</item>
@@ -15,5 +15,10 @@
     <style name="NoLineEditText" parent="android:Widget.EditText">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:paddingBottom">0dp</item>
+    </style>
+    <style name="BlurDialogTheme" parent="@android:style/Theme.Material.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@drawable/dialog_round_background</item>
+        <item name="android:windowBackgroundBlurRadius" tools:ignore="NewApi">30dp</item>
     </style>
 </resources>

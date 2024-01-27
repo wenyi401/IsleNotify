@@ -1,9 +1,12 @@
 package androidx.top.hyperos.dynamic.notify.ext;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -29,7 +32,8 @@ private SharedPreTool msp;
     public Dialog initDialog() {
         msp = MainActivity.msp;
         View view = LayoutInflater.from(context).inflate(R.layout.layout_appconfig, null);
-        Boolean shield = false;
+        boolean shield = false;
+        boolean music = false;
         long shortTime = 3500; // 默认短时间
         long longTime = 5500; // 默认长时间
         final long shortTimeFinal = shortTime;
@@ -43,6 +47,7 @@ private SharedPreTool msp;
                 try {
                     JSONObject json = new JSONObject(jsonString);
                     shield = json.optBoolean("shield", false);
+                    music = json.optBoolean("music", false);
                     shortTime = json.optInt("short", 3500);
                     longTime = json.optInt("long", 5500);
                     intercept = json.optString("intercept", "");
@@ -52,13 +57,15 @@ private SharedPreTool msp;
             }
         }
 
-        Dialog dialog = Tools.Alert(context);
-        dialog.setContentView(view);
+        AlertDialog dialog = new BlurDialog(context).setView(view).create();
+        Window dialogWindow = dialog.getWindow();
+        dialogWindow.setGravity(Gravity.BOTTOM);
         dialog.setTitle(Tools.getString(R.string.app_dialog_tip));
 
         // 寻找视图控件
         LinearLayout layout = view.findViewById(R.id.appconfig_layout);
         Switch switchAppShield = view.findViewById(R.id.app_shield);
+        Switch switchAppMusic = view.findViewById(R.id.app_music);
         EditText editTextAppTimeShort = view.findViewById(R.id.app_time_short);
         EditText editTextAppTimeLong = view.findViewById(R.id.app_time_long);
         EditText editTextAppInfoIntercept = view.findViewById(R.id.app_info_intercept);
@@ -70,6 +77,7 @@ private SharedPreTool msp;
 
         // 设置视图控件的值
         switchAppShield.setChecked(shield);
+        switchAppMusic.setChecked(music);
         editTextAppTimeShort.setText(String.valueOf(shortTime));
         editTextAppTimeLong.setText(String.valueOf(longTime));
         editTextAppInfoIntercept.setText(intercept);
@@ -81,6 +89,7 @@ private SharedPreTool msp;
             try {
                 JSONObject json = new JSONObject();
                 json.put("shield", switchAppShield.isChecked());
+                json.put("music", switchAppMusic.isChecked());
                 // 获取并检查短时间输入
                 String shortTimeInput = editTextAppTimeShort.getText().toString().trim();
                 if (!shortTimeInput.isEmpty()) {

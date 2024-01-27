@@ -5,8 +5,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Icon;
+import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.view.Gravity;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +20,8 @@ import androidx.top.hyperos.dynamic.notify.ext.Tools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -33,7 +38,10 @@ public class HookInit implements IXposedHookLoadPackage {
     private RelativeLayout mRLRight;
     private LoadPackageParam mLpparam;
     private Context context;
-private XSharedPreferences sp;
+    private XSharedPreferences sp;
+    private XC_MethodHook methodHook;
+    private XC_MethodHook.Unhook Hook;
+
     public static Class<?> getClass(XC_LoadPackage.LoadPackageParam lpparam, String classname) {
         try {
             return lpparam.classLoader.loadClass(classname);
@@ -86,23 +94,30 @@ private XSharedPreferences sp;
                         String packageName = sbn.getPackageName();
                         //boolean isOngoing = (notification.flags & Notification.FLAG_ONGOING_EVENT) != 0;
                         if (notification != null) {
-                            CharSequence input = notification.tickerText;
-                            if (input != null && context != null) {
-                                Boolean shield = false;
-                                long shortTime = 3500; // 默认短时间
-                                long longTime = 5500; // 默认长时间
-                                String intercept = "";
-                                Long duration;
-                                String text = input.toString();
-                                int firstColonIndex = text.indexOf(":");
-                                if (firstColonIndex != -1 && packageName.equals(Config.qq)) {
-                                    text = text.substring(firstColonIndex + 1).trim();
+                            Bundle data = notification.extras;
+                            CharSequence title = data.getCharSequence(Notification.EXTRA_TITLE); // title
+                            CharSequence text = data.getCharSequence(Notification.EXTRA_TEXT); // text
+                            Icon icon = notification.getLargeIcon();
+                            if (icon == null) {
+                                icon = notification.getSmallIcon();
+                            }
+                            if (text != null && icon != null) {
+                                boolean shield = false;
+                                boolean music = false;
+                                long shortTime = 3500;
+                                long longTime = 5500;
+                                String intercept = null;
+                                String input = text.toString();
+                                if (sbn.getPackageName().equals(Config.xmsf)) {
+                                    input = input.replaceFirst("•", ":");
+                                    input = title.toString() + input;
                                 }
                                 if (sp.contains(packageName)) {
                                     String jsonString = sp.getString(packageName, "");
                                     try {
                                         JSONObject json = new JSONObject(jsonString);
                                         shield = json.getBoolean("shield");
+                                        music = json.getBoolean("music");
                                         shortTime = json.getLong("short");
                                         longTime = json.getLong("long");
                                         intercept = json.getString("intercept");
@@ -110,15 +125,23 @@ private XSharedPreferences sp;
                                         XposedBridge.log(e.toString());
                                     }
                                 }
-                                if (input.length() > 18) {
-                                    duration = longTime;
-                                } else {
-                                    duration = shortTime;
-                                }
-                                XposedBridge.log("time:"+shortTime+";"+longTime);
-                                if (!shield && !checkIfStartsWith(text, intercept)) {
-                                    start(context, text, duration);
-                                    initToast(notification);
+                                long duration = input.length() > 18 ? longTime : shortTime;
+                                if (!shield && !checkIfStartsWith(input, intercept) && !input.contains("GroupSummary")) {
+                                    CharSequence tickerText = notification.tickerText;
+                                    if (music && tickerText != null) {
+                                        input = tickerText.toString();
+                                    }
+                                    if (Hook != null) {
+                                        Hook.unhook();
+                                    }
+                                    if (sp.getBoolean("log", false)) {
+                                        HashMap<String, String> print = new HashMap<String, String>();
+                                        print.put("content", input);
+                                        print.put("name", packageName);
+                                        XposedBridge.log(Tools.concat(" [WENYI] :", print.toString()));
+                                    }
+                                    start(context, input, duration);
+                                    initToast(notification, icon, input);
                                 }
                             }
                         }
@@ -126,14 +149,18 @@ private XSharedPreferences sp;
                 });
     }
 
-    public static boolean checkIfStartsWith(String input, String matchText) {
-        if (!input.contains("|")) {
-            return matchText.startsWith(input.trim());
+    public static boolean checkIfStartsWith(String input, String intercept) {
+        if (intercept == null || intercept.isEmpty()) {
+            return false;
         }
-        String[] segments = input.split("\\|");
-        for (String segment : segments) {
-            if (matchText.startsWith(segment.trim())) {
-                return true;
+        if (!intercept.contains("|")) {
+            return input.startsWith(intercept.trim());
+        } else {
+            String[] segments = intercept.split("\\|");
+            for (String segment : segments) {
+                if (!segment.trim().isEmpty() && input.startsWith(segment.trim())) {
+                    return true;
+                }
             }
         }
         return false;
@@ -156,7 +183,7 @@ private XSharedPreferences sp;
         StatusBarGuideModel.IconParams icon = new StatusBarGuideModel.IconParams();
         icon.setCategory("drawable");
         icon.setIconResName("ic_device_water_off");
-        icon.setIconFormat("png");
+        icon.setIconFormat("svg");
         icon.setIconType(1);
 
         StatusBarGuideModel.Right right = new StatusBarGuideModel.Right();
@@ -166,22 +193,29 @@ private XSharedPreferences sp;
         new StrongToastInfo(context, bar, duration);
     }
 
-    private void initToast(Notification notification) {
-        XC_MethodHook methodHook = new XC_MethodHook() {
+    private void initToast(Notification notification, Icon icon, String text) {
+        methodHook = new XC_MethodHook() {
             @Override
-            protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
-                Icon notificationIcon = notification.getLargeIcon();
-                if (notificationIcon == null) {
-                    notificationIcon = notification.getSmallIcon();
-                }
-                Bitmap draw = Tools.drawableToBitamp(notificationIcon.loadDrawable(context));
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+            }
+
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Bitmap draw = Tools.drawableToBitamp(icon.loadDrawable(context));
                 mLeftTextView = (TextView) XposedHelpers.getObjectField(param.thisObject, "mLeftTextView");
                 mRightTextView = (TextView) XposedHelpers.getObjectField(param.thisObject, "mRightTextView");
                 mRightImageView = (ImageView) XposedHelpers.getObjectField(param.thisObject, "mRightImageView");
                 mRLRight = (RelativeLayout) XposedHelpers.getObjectField(param.thisObject, "mRLRight");
+                mLeftTextView.setText(text);
                 mLeftTextView.setTextSize(13);
                 mRightTextView.setTextSize(13);
                 mRightImageView.setImageBitmap(Tools.getCroppedBitmap(draw));
+                AlphaAnimation anim = new AlphaAnimation(0, 1);
+                anim.setDuration(300);
+                mLeftTextView.setAnimation(anim);
+                mRightTextView.setAnimation(anim);
+                mRightImageView.setAnimation(anim);
+                anim.start();
                 mRLRight.setOnClickListener(v -> {
                     PendingIntent intent = notification.contentIntent;
                     try {
@@ -190,10 +224,11 @@ private XSharedPreferences sp;
 
                     }
                 });
-                XposedBridge.unhookMethod(param.method, this);  // 移除hook
+                XposedBridge.unhookMethod(param.method, this);
             }
         };
-        XposedHelpers.findAndHookMethod(findClass(Config.ToastPackage), "setValue", methodHook);
+
+        Hook = XposedHelpers.findAndHookMethod(findClass(Config.ToastPackage), "setValue", methodHook);  // 进行新的 hook
     }
 
 }

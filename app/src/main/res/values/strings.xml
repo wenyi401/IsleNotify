@@ -26,4 +26,6 @@
     <string name="app_remove">remove</string>
     <string name="app_user">user</string>
     <string name="app_system">system</string>
+    <string name="app_modify_tickertext">modify tickertext</string>
+    <string name="app_log">log</string>
 </resources>

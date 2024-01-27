@@ -10,9 +10,10 @@ android {
         applicationId "androidx.top.hyperos.dynamic.notify"
         minSdk 33
         targetSdk 34
-        versionCode 1
-        versionName "24.01.26"
-        multiDexEnabled false
+        versionCode 3
+        versionName "24.02.23"
+        aaptOptions.cruncherEnabled false
+        aaptOptions.useNewCruncher false
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -34,16 +35,17 @@ android {
         exclude '**.bin'
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            excludes +=  'META-INF/**'
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly fileTree(dir: 'libs/compile_only', include: ['*.jar'])
 }

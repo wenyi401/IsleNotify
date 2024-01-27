@@ -18,8 +18,31 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
+            android:text="@string/app_modify_tickertext"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <androidx.top.hyperos.dynamic.notify.widget.Switch
+            android:id="@+id/app_music"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
             android:text="@string/app_shield_str"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
         <androidx.top.hyperos.dynamic.notify.widget.Switch
@@ -45,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_time_short_str"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <EditText
@@ -68,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_time_long_str"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <EditText
@@ -92,7 +115,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="@string/app_info_intercept_str"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
         <EditText

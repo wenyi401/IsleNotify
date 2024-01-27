@@ -4,42 +4,57 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp">
 
-        <TabHost
-            android:id="@android:id/tabhost"
+        <EditText
+            android:id="@+id/app_search"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-            <LinearLayout
+    <TabHost
+        android:id="@android:id/tabhost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp" />
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
-                <TabWidget
-                    android:id="@android:id/tabs"
+                <androidx.top.hyperos.dynamic.notify.widget.ListView
+                    android:id="@+id/app_list_user"
+                    style="@style/NoDividerListView"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp" />
+                    android:layout_height="match_parent"
+                    android:focusableInTouchMode="false" />
 
-                <FrameLayout
-                    android:id="@android:id/tabcontent"
+                <androidx.top.hyperos.dynamic.notify.widget.ListView
+                    android:id="@+id/app_list_system"
+                    style="@style/NoDividerListView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <androidx.top.hyperos.dynamic.notify.widget.ListView
-                        android:id="@+id/app_list_user"
-                        style="@style/NoDividerListView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:focusableInTouchMode="false" />
-
-                    <androidx.top.hyperos.dynamic.notify.widget.ListView
-                        android:id="@+id/app_list_system"
-                        style="@style/NoDividerListView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:focusableInTouchMode="false" />
-                </FrameLayout>
-            </LinearLayout>
-        </TabHost>
+                    android:layout_height="match_parent"
+                    android:focusableInTouchMode="false" />
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
 
 </LinearLayout>

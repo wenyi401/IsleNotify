@@ -10,16 +10,20 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TabHost;
 
 import androidx.top.hyperos.dynamic.notify.ext.AppInfo;
 import androidx.top.hyperos.dynamic.notify.ext.AppInfoAdapter;
 import androidx.top.hyperos.dynamic.notify.ext.AppInfoDialog;
+import androidx.top.hyperos.dynamic.notify.ext.BlurDialog;
 import androidx.top.hyperos.dynamic.notify.ext.Config;
 import androidx.top.hyperos.dynamic.notify.ext.SharedPreTool;
 import androidx.top.hyperos.dynamic.notify.ext.StatusBarGuideModel;
@@ -33,12 +37,15 @@ import androidx.top.hyperos.dynamic.notify.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity {
+    public class MainActivity extends BaseActivity {
     public static Context context;
+    private ListView infoUser;
+    private ListView infoSystem;
     private List<AppInfo> appUser;
     private List<AppInfo> appSystem;
     private AppInfoAdapter adapter;
     private boolean isHide = false;
+    private boolean isLog = false;
     public static SharedPreTool msp;
 
     @Override
@@ -51,28 +58,55 @@ public class MainActivity extends Activity {
         try {
             msp = new SharedPreTool(Tools.getSharedPreferences(context));
             isHide = msp.optBoolean("hide", false);
-            initTab();
+            isLog = msp.optBoolean("log", false);
+            //error("hide" + isHide);
             init();
-            ActionBar actionBar = getActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-                actionBar.setCustomView(R.layout.layout_bar);
-                View customView = actionBar.getCustomView();
-                ImageView refreshButton = customView.findViewById(R.id.app_refresh);
-                refreshButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        init();
-                    }
-                });
-            }
         } catch (Exception e) {
             error(e.toString());
         }
     }
 
+    private void init() {
+        Tools.exec("su", false);
+        initTab();
+        initBar();
+        infoUser = findViewById(R.id.app_list_user);
+        infoSystem = findViewById(R.id.app_list_system);
+        initAdapter();
+        initList(infoUser, appUser);
+        initList(infoSystem, appSystem);
+        EditText searchText = findViewById(R.id.app_search);
+        searchText.setBackground(Tools.getRadiusBackground(Tools.getColor(R.color.pale), 25));
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                List<AppInfo> resultUser = new ArrayList<>();
+                List<AppInfo> resultSystem = new ArrayList<>();
+                for (AppInfo info : appUser) {
+                    if (info.getAppName().contains(text) || info.getPackageName().contains(text)) {
+                        resultUser.add(info);
+                    }
+                }
+                for (AppInfo info : appSystem) {
+                    if (info.getAppName().contains(text) || info.getPackageName().contains(text)) {
+                        resultSystem.add(info);
+                    }
+                }
+                initList(infoUser, resultUser);
+                initList(infoSystem, resultSystem);
+            }
+        });
+    }
     private void initTab() {
         TabHost tabhost = findViewById(android.R.id.tabhost);
+        findViewById(android.R.id.tabs).setBackground(Tools.getRadiusBackground(Tools.getColor(R.color.pale), 25));
         tabhost.setup();
         TabHost.TabSpec user = tabhost.newTabSpec(Tools.getString(R.string.app_user)).setIndicator(Tools.getString(R.string.app_user)).setContent(R.id.app_list_user);
         TabHost.TabSpec system = tabhost.newTabSpec(Tools.getString(R.string.app_system)).setIndicator(Tools.getString(R.string.app_system)).setContent(R.id.app_list_system);
@@ -80,14 +114,22 @@ public class MainActivity extends Activity {
         tabhost.addTab(system);
         tabhost.setCurrentTab(0);
     }
-
-    private void init() {
-        Tools.exec("su", false);
-        ListView infoUser = findViewById(R.id.app_list_user);
-        ListView infoSystem = findViewById(R.id.app_list_system);
-        initAdapter();
-        initList(infoUser, appUser);
-        initList(infoSystem, appSystem);
+    private void initBar() {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setCustomView(R.layout.layout_bar);
+            View customView = actionBar.getCustomView();
+            ImageView refreshButton = customView.findViewById(R.id.app_refresh);
+            refreshButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    initAdapter();
+                    initList(infoUser, appUser);
+                    initList(infoSystem, appSystem);
+                }
+            });
+        }
     }
 
     @Override
@@ -96,7 +138,7 @@ public class MainActivity extends Activity {
     }
 
     private void error(String e) {
-        AlertDialog dialog = new AlertDialog.Builder(context).setMessage(Tools.concat(Tools.getString(R.string.xposed_error_tip), e)).setCancelable(false).create();
+            AlertDialog dialog = new BlurDialog(context).setMessage(Tools.concat(Tools.getString(R.string.xposed_error_tip), e)).create();
         dialog.show();
     }
 
@@ -127,7 +169,7 @@ public class MainActivity extends Activity {
             }
         });
         listView.setOnItemLongClickListener((parent, view, position, id) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new BlurDialog(context);
             builder.setTitle(Tools.getString(R.string.app_dialog_tip));
             builder.setMessage(Tools.getString(R.string.app_remove_tip));
             builder.setPositiveButton(R.string.app_remove, (dialog, which) -> {
@@ -148,11 +190,18 @@ public class MainActivity extends Activity {
                 Tools.exec("killall com.android.systemui", true);
                 return true;
             case Config.MENU_HIDE_ICON:
-                showLauncherIcon(item.isChecked());
-                toast(Tools.getString(R.string.app_hide_icon));
+                boolean hide = !item.isChecked();
+                item.setChecked(hide);
+                msp.put("hide", hide);
+                showLauncherIcon(hide);
+                return true;
+            case Config.MENU_LOG:
+                boolean log = !item.isChecked();
+                item.setChecked(log);
+                msp.put("log", log);
                 return true;
             case Config.MENU_ABOUT:
-                AlertDialog dialog = new AlertDialog.Builder(context).setMessage(R.string.app_explain).setPositiveButton("加入群聊", new DialogInterface.OnClickListener() {
+                AlertDialog dialog = new BlurDialog(context).setMessage(R.string.app_explain).setPositiveButton("加入群聊", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Tools.joinQQGroup(context, Tools.getString(R.string.qq_key));
@@ -175,7 +224,8 @@ public class MainActivity extends Activity {
         configSub.add(0, Config.MENU_IMPORT, 0, R.string.app_config_import);
         configSub.add(0, Config.MENU_EXPORT, 0, R.string.app_config_export);
          */
-        menu.add(0, Config.MENU_HIDE_ICON, 0, Tools.getString(R.string.app_hide_icon)).setChecked(true).setChecked(isHide);
+        menu.add(0, Config.MENU_HIDE_ICON, 0, Tools.getString(R.string.app_hide_icon)).setCheckable(true).setChecked(isHide);
+        menu.add(0, Config.MENU_LOG, 0, Tools.getString(R.string.app_log)).setCheckable(true).setChecked(isLog);
         menu.add(0, Config.MENU_ABOUT, 0, Tools.getString(R.string.app_about));
         return super.onCreateOptionsMenu(menu);
     }

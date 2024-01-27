@@ -7,9 +7,10 @@ public class Config {
     public static final int MENU_CONFIG = MENU_ABOUT + 3;
     public static final int MENU_IMPORT = MENU_ABOUT + 4;
     public static final int MENU_EXPORT = MENU_ABOUT + 5;
+    public static final int MENU_LOG = MENU_ABOUT + 6;
     public static final int READ_REQUEST_CODE = 100;
     public static final int REQUEST_MANAGE_FILES_ACCESS = READ_REQUEST_CODE + 1;
-	public static final String qq = "com.tencent.mobileqq";
+	public static final String xmsf = "com.xiaomi.xmsf";
     public static final String AppPackage = "androidx.top.hyperos.dynamic.notify";
     public static String SystemUiPackage = "com.android.systemui";
     public static String ToastPath = Tools.concat(SystemUiPackage, ".toast");

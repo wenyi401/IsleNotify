@@ -3,6 +3,8 @@
         <color name="colorPrimary">#009688</color>
         <color name="colorPrimaryDark">#00796B</color>
         <color name="colorAccent">#FF9800</color>
-        <color name="black">#000000</color>
+        <color name="dialog_background_color">#66000000</color>
         <color name="white">#FFFFFF</color>
+        <color name="black">#000000</color>
+        <color name="pale">#fff6f6f9</color>
 </resources>

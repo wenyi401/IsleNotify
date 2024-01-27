@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.top.hyperos.dynamic.notify.MainActivity;
 import androidx.top.hyperos.dynamic.notify.R;
@@ -60,7 +61,6 @@ public class Tools {
         drawable.draw(canvas);
         return bitmap;
     }
-
     public static Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
@@ -168,13 +168,5 @@ public class Tools {
         drawable.setColor(color);
         drawable.setCornerRadius(radius);
         return drawable;
-    }
-
-    public static Dialog Alert(Context context) {
-        Dialog dialog = new Dialog(context);
-        Window window = dialog.getWindow();
-        window.setGravity(Gravity.BOTTOM);
-        window.setBackgroundDrawable(Tools.getRadiusBackground(Tools.getColor(R.color.white), 45));
-        return dialog;
     }
 }

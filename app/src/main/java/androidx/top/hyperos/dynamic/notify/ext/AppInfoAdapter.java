@@ -51,7 +51,7 @@ public class AppInfoAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_appinfo, null);
             LinearLayout layout = convertView.findViewById(R.id.app_info_layout);
-            layout.setBackgroundDrawable(Tools.getRadiusBackground(0xfff6f6f9, 25));
+            layout.setBackgroundDrawable(Tools.getRadiusBackground(Tools.getColor(R.color.pale), 25));
             viewHolder = new ViewHolder();
             viewHolder.appName = convertView.findViewById(R.id.app_name);
             viewHolder.appPackageName = convertView.findViewById(R.id.app_package);
